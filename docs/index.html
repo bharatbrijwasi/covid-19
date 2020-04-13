@@ -28,6 +28,9 @@ window.FlexDashboardComponents = [];
 <script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
 <script src="site_libs/stickytableheaders-0.1.19/jquery.stickytableheaders.min.js"></script>
+<link href="site_libs/font-awesome-5.0.13/css/fa-svg-with-js.css" rel="stylesheet" />
+<script src="site_libs/font-awesome-5.0.13/js/fontawesome-all.min.js"></script>
+<script src="site_libs/font-awesome-5.0.13/js/fa-v4-shims.min.js"></script>
 <style type="text/css">
 
 /*
@@ -2586,29 +2589,63 @@ window.FlexDashboardComponents.push({
 
 <div id="dashboard-container">
 
-<div id="column" class="section level2" data-width="650">
-<h2>Column</h2>
-<div id="chart-a" class="section level3">
-<h3>Chart A</h3>
+<div id="visualization" class="section level1">
+<h1>Visualization</h1>
+<div id="row" class="section level2">
+<h2>Row</h2>
+<div id="confirmed" class="section level3 value-box">
+<h3>confirmed</h3>
 <div class="knitr-options" data-fig-width="576" data-fig-height="460">
 
 </div>
+<span class="value-output" data-caption="Total Confirmed Cases" data-icon="fas fa-user-md" data-color="purple">32</span>
 </div>
-</div>
-<div id="column-1" class="section level2" data-width="350">
-<h2>Column</h2>
-<div id="chart-b" class="section level3">
-<h3>Chart B</h3>
+<div id="active" class="section level3 value-box">
+<h3>active</h3>
 <div class="knitr-options" data-fig-width="576" data-fig-height="460">
 
 </div>
+<span class="value-output" data-caption="Active Cases" data-color="bg-warning">32</span>
 </div>
-<div id="chart-c" class="section level3">
-<h3>Chart C</h3>
+<div id="total-recovered-cases" class="section level3">
+<h3>Total Recovered Cases</h3>
 <div class="knitr-options" data-fig-width="576" data-fig-height="460">
 
 </div>
+<span class="value-output" data-icon="fa-pencil" data-color="forestgreen">32</span>
 </div>
+<div id="death" class="section level3 value-box">
+<h3>death</h3>
+<div class="knitr-options" data-fig-width="576" data-fig-height="460">
+
+</div>
+<span class="value-output" data-caption="Total deaths" data-color="red">32</span>
+</div>
+</div>
+<div id="row-1" class="section level2">
+<h2>Row</h2>
+<div id="chart-1" class="section level3">
+<h3>chart 1</h3>
+</div>
+</div>
+<div id="row-2" class="section level2">
+<h2>Row</h2>
+<div id="chart-2" class="section level3">
+<h3>chart 2</h3>
+</div>
+<div id="chart-3" class="section level3">
+<h3>chart 3</h3>
+</div>
+</div>
+</div>
+<div id="map" class="section level1">
+<h1>Map</h1>
+</div>
+<div id="data" class="section level1">
+<h1>Data</h1>
+</div>
+<div id="about-me" class="section level1">
+<h1>About Me</h1>
 </div>
 
 </div>
@@ -2634,7 +2671,7 @@ $(document).ready(function () {
   FlexDashboard.init({
     theme: "cosmo",
     fillPage: true,
-    orientation: "columns",
+    orientation: "rows",
     storyboard: false,
     defaultFigWidth: 576,
     defaultFigHeight: 460,

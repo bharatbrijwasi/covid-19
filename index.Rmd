@@ -2,7 +2,7 @@
 title: "Covid-19"
 output: 
   flexdashboard::flex_dashboard:
-    orientation: columns
+    orientation: rows
     vertical_layout: fill
 ---
 
@@ -10,27 +10,55 @@ output:
 library(flexdashboard)
 ```
 
-Column {data-width=650}
+
+
+Visualization
+=======================================================================
+Row
 -----------------------------------------------------------------------
 
-### Chart A
+### confirmed {.value-box}
 
 ```{r}
-
+valueBox(32, icon = "fas fa-user-md",  caption = "Total Confirmed Cases", color = "purple")
 ```
 
-Column {data-width=350}
+### active {.value-box}
+
+```{r}
+valueBox(32, caption = "Active Cases", color = "warning")
+```
+
+### Total Recovered Cases
+
+```{r}
+valueBox(32, icon = icon("fa-pencil"), color = "forestgreen")
+```
+
+
+### death {.value-box}
+
+```{r}
+valueBox(32,"Total deaths", color = "red")
+```
+
+
+Row
 -----------------------------------------------------------------------
+### chart 1
 
-### Chart B
 
-```{r}
+Row 
+-----------------------------------------------------------------------
+### chart 2
+### chart 3
 
-```
 
-### Chart C
+Map
+=======================================================================
 
-```{r}
+Data
+=======================================================================
 
-```
-
+About Me
+=======================================================================
