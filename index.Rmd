@@ -46,7 +46,6 @@ TotalDeaths <- read.csv("https://opendata.ecdc.europa.eu/covid19/casedistributio
 valueBox(TotalDeaths,"Total deaths", color = "red")
 ```
 
-
 Row
 -----------------------------------------------------------------------
 ### chart 1
