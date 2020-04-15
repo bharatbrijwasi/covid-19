@@ -21,7 +21,8 @@ Row
 ### confirmed {.value-box}
 
 ```{r}
-valueBox(32,caption = "Total Confirmed Cases", color = "purple")
+TotalCases <- read.csv("https://opendata.ecdc.europa.eu/covid19/casedistribution/csv", na.strings = "", fileEncoding = "UTF-8-BOM") %>%   dplyr::select(Cases = cases) %>% sum()
+valueBox(TotalCases,caption = "Total Confirmed Cases", color = "purple")
 ```
 
 ### active {.value-box}
@@ -40,9 +41,9 @@ valueBox(32, color = "forestgreen")
 ### death {.value-box}
 
 ```{r}
-valueBox(32,"Total deaths", color = "red")
+TotalDeaths <- read.csv("https://opendata.ecdc.europa.eu/covid19/casedistribution/csv", na.strings = "", fileEncoding = "UTF-8-BOM") %>%   dplyr::select(Deaths = deaths) %>% sum()
+valueBox(TotalDeaths,"Total deaths", color = "red")
 ```
-
 
 Row
 -----------------------------------------------------------------------
@@ -60,14 +61,18 @@ Map
 
 Data
 =======================================================================
+### Covid-19 All Country Data
 ```{r}
-data <- read.csv("https://github.com/CSSEGISandData/COVID-19/blob/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_global.csv")
+#these libraries need to be loaded
+library(utils)
+library(dplyr)
+#read the Dataset sheet into “R”. The dataset will be called "data".
 
-   DT::datatable(data,rownames = TRUE,
+read.csv("https://opendata.ecdc.europa.eu/covid19/casedistribution/csv", na.strings = "", fileEncoding = "UTF-8-BOM") %>%   dplyr::select(Date = dateRep,Year = year ,Cases = cases, Deaths = deaths, Country = countriesAndTerritories ) %>%
+   DT::datatable(rownames = TRUE, caption = 'This Data Update Automatically Every day',
             options = list(searchHighlight = TRUE, 
                            pageLength = 20), filter = 'top')
 ```
-
 
 About Me
 =======================================================================
