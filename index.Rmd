@@ -41,9 +41,9 @@ valueBox(32, color = "forestgreen")
 ### death {.value-box}
 
 ```{r}
-valueBox(32,"Total deaths", color = "red")
+TotalDeaths <- read.csv("https://opendata.ecdc.europa.eu/covid19/casedistribution/csv", na.strings = "", fileEncoding = "UTF-8-BOM") %>%   dplyr::select(Deaths = deaths) %>% sum()
+valueBox(TotalDeaths,"Total deaths", color = "red")
 ```
-
 
 Row
 -----------------------------------------------------------------------
