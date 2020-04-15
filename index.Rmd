@@ -21,7 +21,8 @@ Row
 ### confirmed {.value-box}
 
 ```{r}
-valueBox(32,caption = "Total Confirmed Cases", color = "purple")
+TotalCases <- read.csv("https://opendata.ecdc.europa.eu/covid19/casedistribution/csv", na.strings = "", fileEncoding = "UTF-8-BOM") %>%   dplyr::select(Cases = cases) %>% sum()
+valueBox(TotalCases,caption = "Total Confirmed Cases", color = "purple")
 ```
 
 ### active {.value-box}
