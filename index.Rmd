@@ -34,11 +34,6 @@ TotalActive <- read.csv("https://opendata.ecdc.europa.eu/covid19/casedistributio
 valueBox(TotalActive, caption = "Active Cases", color = "warning")
 ```
 
-### Total Recovered Cases
-
-```{r}
-valueBox(32, color = "forestgreen")
-```
 
 
 ### death {.value-box}
