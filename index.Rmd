@@ -9,6 +9,8 @@ output:
 ```{r setup, include=FALSE}
 library(flexdashboard)
 library(dplyr)
+
+data12 <- read.csv("https://opendata.ecdc.europa.eu/covid19/casedistribution/csv", na.strings = "", fileEncoding = "UTF-8-BOM") %>%   dplyr::select(Date = dateRep,Year = year ,Cases = cases, Deaths = deaths, Country = countriesAndTerritories)
 ```
 
 
