@@ -49,22 +49,24 @@ Row {data-height=300}
 
 Row 
 -----------------------------------------------------------------------
-### chart 2
 
-### CountryNameWise Summary
+### CountryNameWise Summary {data-width=500}
 ```{r}
-CountryWiseData <- myData %>% group_by(Country) %>%
-                   summarise(Confirmed_Cases = sum(Cases), Total_Deaths = sum(Deaths)) 
-
+CountryWiseData <- myData %>% 
+                   group_by(Country) %>%
+                   summarise(Confirmed_Cases = sum(Cases), Total_Deaths = sum(Deaths))%>%
+                   mutate(Active_Cases = Confirmed_Cases - Total_Deaths)
 CountryWiseData %>%
   DT::datatable(rownames = FALSE,
-                colnames = c("Country", "Confirmed Case","Total Deaths"),
+                colnames = c("Country", "Confirmed Case","Total Deaths", "Active Cases"),
                 options = list(pageLength = nrow(CountryWiseData), dom = 't',order = list(1, desc),
                 initComplete = JS("function(settings, json) {",
                 "$(this.api().table().header()).css({'background-color': '#000', 'color': '#fff'});",
                 "}")))
 
 ``` 
+
+### chart 3
 
 Map
 =======================================================================
