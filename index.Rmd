@@ -1,16 +1,17 @@
 ---
-title: "Covid-19"
+title: "Covid-19 Dashboard "
 output: 
   flexdashboard::flex_dashboard:
     orientation: rows
+    social: menu
     vertical_layout: fill
 ---
 
 ```{r setup, include=FALSE}
 library(flexdashboard)
 library(dplyr)
-
-data12 <- read.csv("https://opendata.ecdc.europa.eu/covid19/casedistribution/csv", na.strings = "", fileEncoding = "UTF-8-BOM") %>%   dplyr::select(Date = dateRep,Year = year ,Cases = cases, Deaths = deaths, Country = countriesAndTerritories)
+library(DT)
+myData <- read.csv("https://opendata.ecdc.europa.eu/covid19/casedistribution/csv", na.strings = "", fileEncoding = "UTF-8-BOM") %>%   dplyr::select(Date = dateRep,Year = year ,Cases = cases, Deaths = deaths, Country = countriesAndTerritories)
 ```
 
 
@@ -23,37 +24,47 @@ Row
 ### confirmed {.value-box}
 
 ```{r}
-TotalCases <- read.csv("https://opendata.ecdc.europa.eu/covid19/casedistribution/csv", na.strings = "", fileEncoding = "UTF-8-BOM") %>%   dplyr::select(Cases = cases) %>% sum()
+TotalCases <- myData %>%   dplyr::select(Cases = Cases) %>% sum()
 valueBox(TotalCases,caption = "Total Confirmed Cases", color = "purple")
 ```
 
 ### active {.value-box}
 
 ```{r}
-TotalActive <- read.csv("https://opendata.ecdc.europa.eu/covid19/casedistribution/csv", na.strings = "", fileEncoding = "UTF-8-BOM") %>%   dplyr::select(Cases = cases) %>% sum() -  read.csv("https://opendata.ecdc.europa.eu/covid19/casedistribution/csv", na.strings = "", fileEncoding = "UTF-8-BOM") %>%   dplyr::select(Deaths = deaths) %>% sum()
+TotalActive <- myData %>%   dplyr::select(Cases = Cases) %>% sum() -  myData %>%   dplyr::select(Deaths = Deaths) %>% sum()
 valueBox(TotalActive, caption = "Active Cases", color = "warning")
 ```
-
 
 
 ### death {.value-box}
 
 ```{r}
-TotalDeaths <- read.csv("https://opendata.ecdc.europa.eu/covid19/casedistribution/csv", na.strings = "", fileEncoding = "UTF-8-BOM") %>%   dplyr::select(Deaths = deaths) %>% sum()
+TotalDeaths <- myData %>%   dplyr::select(Deaths = Deaths) %>% sum()
 valueBox(TotalDeaths,"Total deaths", color = "red")
 ```
 
-Row
+Row {data-height=300}
 -----------------------------------------------------------------------
 ### chart 1
 
 Row 
 -----------------------------------------------------------------------
 ### chart 2
-```{r} 
-```
-### chart 3
 
+### CountryNameWise Summary
+```{r}
+CountryWiseData <- myData %>% group_by(Country) %>%
+                   summarise(Confirmed_Cases = sum(Cases), Total_Deaths = sum(Deaths)) 
+
+CountryWiseData %>%
+  DT::datatable(rownames = FALSE,
+                colnames = c("Country", "Confirmed Case","Total Deaths"),
+                options = list(pageLength = nrow(CountryWiseData), dom = 't',order = list(1, desc),
+                initComplete = JS("function(settings, json) {",
+                "$(this.api().table().header()).css({'background-color': '#000', 'color': '#fff'});",
+                "}")))
+
+``` 
 
 Map
 =======================================================================
@@ -73,5 +84,9 @@ read.csv("https://opendata.ecdc.europa.eu/covid19/casedistribution/csv", na.stri
                            pageLength = 20), filter = 'top')
 ```
 
-About Me
+About Me 
 =======================================================================
+```{r}
+death <- myData %>% group_by(Country) %>% summarise(sumby = sum(Deaths))%>% filter(Country == 'India')
+DT::datatable(death)
+```
