@@ -11,62 +11,119 @@ output:
 library(flexdashboard)
 library(dplyr)
 library(DT)
+library(plotly)
+confirmed_color <- "purple"
+active_color <- "#1f77b4"
+recovered_color <- "forestgreen"
+death_color <- "red"
 myData <- read.csv("https://opendata.ecdc.europa.eu/covid19/casedistribution/csv", na.strings = "", fileEncoding = "UTF-8-BOM") %>%   dplyr::select(Date = dateRep,Year = year ,Cases = cases, Deaths = deaths, Country = countriesAndTerritories)
+
+
+
+CountryWiseData <- myData %>% 
+                   group_by(Country) %>%
+                   summarise(Confirmed_Cases = sum(Cases), Total_Deaths = sum(Deaths))%>%
+                   mutate(Active_Cases = (Confirmed_Cases - Total_Deaths), 
+                          Death_rate = (Total_Deaths / Confirmed_Cases)*100)
+
 ```
 
 
 
 Visualization
 =======================================================================
-Row
+Row {data-height=150}
 -----------------------------------------------------------------------
 
-### confirmed {.value-box}
+### confirmed cases
 
 ```{r}
-TotalCases <- myData %>%   dplyr::select(Cases = Cases) %>% sum()
-valueBox(TotalCases,caption = "Total Confirmed Cases", color = "purple")
+
+valueBox(value = paste(myData %>%   
+          dplyr::select(Cases = Cases) %>% sum()),
+          color = confirmed_color)
 ```
 
-### active {.value-box}
+### active cases
 
 ```{r}
-TotalActive <- myData %>%   dplyr::select(Cases = Cases) %>% sum() -  myData %>%   dplyr::select(Deaths = Deaths) %>% sum()
-valueBox(TotalActive, caption = "Active Cases", color = "warning")
+
+valueBox(value = paste(myData %>%   dplyr::select(Cases = Cases) %>% 
+           sum() -  myData %>%   dplyr::select(Deaths = Deaths) %>% sum()),
+           color = active_color)
 ```
 
 
-### death {.value-box}
+### Total deaths
 
 ```{r}
-TotalDeaths <- myData %>%   dplyr::select(Deaths = Deaths) %>% sum()
-valueBox(TotalDeaths,"Total deaths", color = "red")
+valueBox(value = paste(myData %>%   dplyr::select(Deaths = Deaths) %>% sum()),
+         color = death_color)
 ```
 
-Row {data-height=300}
+
+Row {data-height=400}
 -----------------------------------------------------------------------
-### chart 1
+### Total cases by type {.no-padding}
+
+```{r}
+plotly::plot_ly(data = CountryWiseData[1:50,], x = ~ Country, 
+                y = ~Confirmed_Cases,
+                text = ~Country,
+                type = "bar",
+                name = "Confirmed cases",
+                marker = list(color = confirmed_color))%>%
+plotly::add_trace(y = ~Active_Cases,
+                name = "Total Active Cases",
+                marker = list(color = active_color))%>%
+plotly::add_trace(y = ~Total_Deaths,
+                    name = "Total Deaths",
+                    marker = list(color = death_color))%>%
+plotly::layout(barmode = 'stack',
+               yaxis = list(title = "Total Cases", type = "log"),
+               xaxis = list(title = "CountryName"),
+               hovermode = "compare",
+               margin = list(
+                 b = 10,
+                 t = 10,
+                 pad = 2
+               ))
+
+
+```
+
+
+
+
+
 
 Row 
 -----------------------------------------------------------------------
 
-### CountryNameWise Summary {data-width=500}
+### Death rate by countryName {.no-padding}
+
 ```{r}
-CountryWiseData <- myData %>% 
-                   group_by(Country) %>%
-                   summarise(Confirmed_Cases = sum(Cases), Total_Deaths = sum(Deaths))%>%
-                   mutate(Active_Cases = Confirmed_Cases - Total_Deaths)
-CountryWiseData %>%
-  DT::datatable(rownames = FALSE,
+plotly::plot_ly(CountryWiseData[1:150,], x = ~Country, 
+                y = ~ Death_rate,
+                type = 'scatter', 
+                mode = 'line+markers')%>%
+      layout(title = "CountryWise Death Rate", annotations=~Death_rate)
+
+
+```
+
+### CountryWise Summary {.no-padding}
+```{r}
+
+CountryWiseData[1:nrow(CountryWiseData),0:4] %>%
+  DT::datatable(rownames = FALSE,escape = FALSE,
                 colnames = c("Country", "Confirmed Case","Total Deaths", "Active Cases"),
-                options = list(pageLength = nrow(CountryWiseData), dom = 't',order = list(1, desc),
-                initComplete = JS("function(settings, json) {",
+                options = list(pageLength = nrow(CountryWiseData),scrollX = TRUE, scrollY=TRUE, autoWidth=TRUE, dom = 't',order = list(1, desc),
+                                columnDefs = list( list(targets=c(0), visible=TRUE, width='10%')),initComplete = JS("function(settings, json) {",
                 "$(this.api().table().header()).css({'background-color': '#000', 'color': '#fff'});",
                 "}")))
 
-``` 
-
-### chart 3
+```
 
 Map
 =======================================================================
@@ -83,7 +140,10 @@ library(dplyr)
 read.csv("https://opendata.ecdc.europa.eu/covid19/casedistribution/csv", na.strings = "", fileEncoding = "UTF-8-BOM") %>%   dplyr::select(Date = dateRep,Year = year ,Cases = cases, Deaths = deaths, Country = countriesAndTerritories ) %>%
    DT::datatable(rownames = TRUE, caption = 'This Data Update Automatically Every day',
             options = list(searchHighlight = TRUE, 
-                           pageLength = 20), filter = 'top')
+                           pageLength = 20,
+                initComplete = JS("function(settings, json) {",
+                "$(this.api().table().header()).css({'background-color': '#000', 'color': '#fff'});",
+                "}")))
 ```
 
 About Me 
