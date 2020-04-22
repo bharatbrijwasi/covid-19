@@ -24,13 +24,14 @@ CountryWiseData <- myData %>%
                    group_by(Country) %>%
                    summarise(Confirmed_Cases = sum(Cases), Total_Deaths = sum(Deaths))%>%
                    mutate(Active_Cases = (Confirmed_Cases - Total_Deaths), 
-                          Death_rate = (Total_Deaths / Confirmed_Cases)*100)
+                          Death_rate = (Total_Deaths / Confirmed_Cases)*100) 
+            #%>% arrange(desc(Confirmed_Cases))
 
 ```
 
 
 
-Visualization
+Summary 
 =======================================================================
 Row {data-height=150}
 -----------------------------------------------------------------------
@@ -64,30 +65,30 @@ valueBox(value = paste(myData %>%   dplyr::select(Deaths = Deaths) %>% sum()),
 
 Row {data-height=400}
 -----------------------------------------------------------------------
-### Total cases by type {.no-padding}
+### Total cases by type(Top 50 Country) {.no-padding}
 
 ```{r}
-plotly::plot_ly(data = CountryWiseData[1:50,], x = ~ Country, 
+plotly::plot_ly(data = CountryWiseData[1:50,], 
+                x = ~Country, 
                 y = ~Confirmed_Cases,
-                text = ~Country,
                 type = "bar",
                 name = "Confirmed cases",
-                marker = list(color = confirmed_color))%>%
-plotly::add_trace(y = ~Active_Cases,
-                name = "Total Active Cases",
-                marker = list(color = active_color))%>%
-plotly::add_trace(y = ~Total_Deaths,
+                marker = list(color = confirmed_color)) %>%
+  plotly::add_trace(y = ~Active_Cases,
+                    name = "Active Cases",
+                    marker = list(color = active_color)) %>%
+  plotly::add_trace(y = ~Total_Deaths,
                     name = "Total Deaths",
-                    marker = list(color = death_color))%>%
-plotly::layout(barmode = 'stack',
-               yaxis = list(title = "Total Cases", type = "log"),
-               xaxis = list(title = "CountryName"),
-               hovermode = "compare",
-               margin = list(
-                 b = 10,
-                 t = 10,
-                 pad = 2
-               ))
+                    marker = list(color = death_color)) %>%
+  plotly::layout(title = "", 
+                 barmode = 'stack',
+                 yaxis = list(title = "Total cases(log scale)", type = 'log'),
+                 xaxis = list(title = ""),
+                 hovermode = 'compare',
+                 margin = list(
+                   pad = 2,
+                   t=5
+                 ))
 
 
 ```
@@ -103,7 +104,7 @@ Row
 ### Death rate by countryName {.no-padding}
 
 ```{r}
-plotly::plot_ly(CountryWiseData[1:150,], x = ~Country, 
+plotly::plot_ly(CountryWiseData[1:50,], x = ~Country, 
                 y = ~ Death_rate,
                 type = 'scatter', 
                 mode = 'line+markers')%>%
@@ -125,8 +126,12 @@ CountryWiseData[1:nrow(CountryWiseData),0:4] %>%
 
 ```
 
+India
+=======================================================================
+
 Map
 =======================================================================
+
 
 Data
 =======================================================================
@@ -148,7 +153,41 @@ read.csv("https://opendata.ecdc.europa.eu/covid19/casedistribution/csv", na.stri
 
 About Me 
 =======================================================================
-```{r}
-death <- myData %>% group_by(Country) %>% summarise(sumby = sum(Deaths))%>% filter(Country == 'India')
-DT::datatable(death)
-```
+
+**The Coronavirus Dashboard**
+
+Last updated: `r format(max(coronavirus::coronavirus$date), '%d %B')`
+
+This Coronavirus dashboard provides an overview of the 2019 Novel Coronavirus COVID-19 (2019-nCoV) epidemic. This dashboard is built with R using the Rmakrdown framework . The code behind the dashboard available [here](https://github.com/bharatbrijwasi/covid-19)
+
+
+
+**Data**
+
+ The input data for this dashboard is the [coronavirus](https://github.com/RamiKrispin/coronavirus) R package (dev version). The data and dashboard is refreshed on a daily bases. The raw data pulled from the Johns Hopkins University Center for Systems Science and Engineering (JHU CCSE) Coronavirus [repository](https://github.com/RamiKrispin/coronavirus-csv)
+
+
+* Dashboard interface - the [flexdashboard](https://rmarkdown.rstudio.com/flexdashboard/) package. 
+* Visualization - the [plotly](https://plot.ly/r/) package and [leaflet](https://rstudio.github.io/leaflet/)
+* Data manipulation - [dplyr](https://dplyr.tidyverse.org/), and [tidyr](https://tidyr.tidyverse.org/)
+* Tables - the [DT](https://rstudio.github.io/DT/) package.
+
+
+
+**Deployment and reproducibly**
+
+The dashboard was deployed to Github docs. If you wish to deploy and/or modify the dashboard on your Github account, [click here for fork](https://github.com/bharatbrijwasi/covid-19)
+
+
+**Note**
+For any question or feedback, you can either open an [issue](https://github.com/bharatbrijwasi/covid-19/issues) or contact me.
+
+**Contact person** : Bharat Sharma
+
+
+**Mobile Number**  : +917244821708
+
+
+**Email ID **      : bharatbrijwasi777@gmail.com
+
+
