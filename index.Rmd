@@ -12,6 +12,11 @@ library(flexdashboard)
 library(dplyr)
 library(DT)
 library(plotly)
+library(coronavirus)
+library(leaflet)
+library(leafpop)
+library(purrr)
+
 confirmed_color <- "purple"
 active_color <- "#1f77b4"
 recovered_color <- "forestgreen"
@@ -26,41 +31,71 @@ CountryWiseData <- myData %>%
                    mutate(Active_Cases = (Confirmed_Cases - Total_Deaths), 
                           Death_rate = (Total_Deaths / Confirmed_Cases)*100) 
             #%>% arrange(desc(Confirmed_Cases))
+df <- coronavirus %>% 
+  # dplyr::filter(date == max(date)) %>%
+  dplyr::group_by(Country.Region, type) %>%
+  dplyr::summarise(total = sum(cases)) %>%
+  tidyr::pivot_wider(names_from =  type, 
+                     values_from = total) %>%
+  dplyr::mutate(unrecovered = confirmed - ifelse(is.na(recovered), 0, recovered) - ifelse(is.na(death), 0, death)) %>%
+  dplyr::arrange(-confirmed) %>%
+  dplyr::ungroup() %>%
+  dplyr::mutate(country = dplyr::if_else(Country.Region == "United Arab Emirates", "UAE", Country.Region)) %>%
+  dplyr::mutate(country = dplyr::if_else(country == "Mainland China", "China", country)) %>%
+  dplyr::mutate(country = dplyr::if_else(country == "North Macedonia", "N.Macedonia", country)) %>%
+  dplyr::mutate(country = trimws(country)) %>%
+  dplyr::mutate(country = factor(country, levels = country))
 
 ```
 
 
 
-Summary 
+Summary  
 =======================================================================
+
 Row {data-height=150}
 -----------------------------------------------------------------------
 
-### confirmed cases
+### confirmed {.value-box}
 
 ```{r}
 
 valueBox(value = paste(myData %>%   
           dplyr::select(Cases = Cases) %>% sum()),
-          color = confirmed_color)
+          caption = "Confirmed Cases",color = confirmed_color)
 ```
 
-### active cases
+### active {.value-box}
 
 ```{r}
 
 valueBox(value = paste(myData %>%   dplyr::select(Cases = Cases) %>% 
            sum() -  myData %>%   dplyr::select(Deaths = Deaths) %>% sum()),
-           color = active_color)
+           caption = "Active Cases",color = active_color)
 ```
 
 
-### Total deaths
+### recovered {.value-box}
 
 ```{r}
-valueBox(value = paste(myData %>%   dplyr::select(Deaths = Deaths) %>% sum()),
+valueBox(value = paste(format(sum(df$recovered, na.rm = TRUE), big.mark = ","), " (",
+                       round(100 * sum(df$recovered, na.rm = TRUE) / sum(df$confirmed), 1), 
+                       "%)", sep = ""), 
+         caption = "Recovered Cases", 
+         color = recovered_color)
+```
+
+### deaths {.value-box}
+
+```{r}
+
+valueBox(value = paste(format(sum(df$death, na.rm = TRUE), big.mark = ","), " (",
+                       round(100 * sum(df$death, na.rm = TRUE) / sum(df$confirmed), 1), 
+                       "%)", sep = ""),
+         caption = "Death Cases",
          color = death_color)
 ```
+
 
 
 Row {data-height=400}
@@ -128,9 +163,54 @@ CountryWiseData[1:nrow(CountryWiseData),0:4] %>%
 
 India
 =======================================================================
+Row
+-----------------------------------------------------------------------
+**Update soon**
 
+Row
+-----------------------------------------------------------------------
 Map
 =======================================================================
+**Map**
+
+```{r map}
+# map tab added by Art Steinmetz
+
+cv_data_for_plot <- coronavirus %>% 
+  dplyr::filter(cases > 0) %>% 
+  dplyr::group_by(Country.Region,Province.State,Lat,Long,type) %>% 
+  dplyr::summarise(cases = sum(cases)) %>% 
+  dplyr::mutate(log_cases = 2 * log(cases)) %>% 
+  dplyr::ungroup()
+cv_data_for_plot.split <- cv_data_for_plot %>% split(cv_data_for_plot$type)
+pal <- colorFactor(c("orange", "red","green"), domain = c("confirmed", "death","recovered"))
+map_object <- leaflet() %>% addProviderTiles(providers$Stamen.Toner)
+names(cv_data_for_plot.split) %>%
+  purrr::walk( function(df) {
+    map_object <<- map_object %>%
+      addCircleMarkers(data=cv_data_for_plot.split[[df]],
+                 lng=~Long, lat=~Lat,
+#                 label=~as.character(cases),
+                 color = ~pal(type),
+                 stroke = FALSE,
+                 fillOpacity = 0.8,
+                 radius = ~log_cases,
+                 # popup =  leafpop::popupTable(cv_data_for_plot.split[[df]],
+                 popup =  popupTable(cv_data_for_plot.split[[df]],
+                                              feature.id = FALSE,
+                                              row.numbers = FALSE,
+                                              zcol=c("type","cases","Country.Region","Province.State")),
+                 group = df,
+#                 clusterOptions = markerClusterOptions(removeOutsideVisibleBounds = F),
+                 labelOptions = labelOptions(noHide = F,
+                                             direction = 'auto'))
+  })
+map_object %>%
+  addLayersControl(
+    overlayGroups = names(cv_data_for_plot.split),
+    options = layersControlOptions(collapsed = FALSE) 
+  )
+```
 
 
 Data
@@ -156,8 +236,7 @@ About Me
 
 **The Coronavirus Dashboard**
 
-Last updated: `r format(max(coronavirus::coronavirus$date), '%d %B')`
-
+ 
 This Coronavirus dashboard provides an overview of the 2019 Novel Coronavirus COVID-19 (2019-nCoV) epidemic. This dashboard is built with R using the Rmakrdown framework . The code behind the dashboard available [here](https://github.com/bharatbrijwasi/covid-19)
 
 
@@ -179,8 +258,9 @@ This Coronavirus dashboard provides an overview of the 2019 Novel Coronavirus CO
 The dashboard was deployed to Github docs. If you wish to deploy and/or modify the dashboard on your Github account, [click here for fork](https://github.com/bharatbrijwasi/covid-19)
 
 
-**Note**
-For any question or feedback, you can either open an [issue](https://github.com/bharatbrijwasi/covid-19/issues) or contact me.
+**Note:**
+
+For any question or [feedback](https://docs.google.com/forms/d/e/1FAIpQLScIpkH7atKCNCkxaHatzK5Bw0U1KpVXZMAcSysBJ40o57ccog/viewform?fbzx=1636045108145844218&edit2=2_ABaOnud5YDSMdrUrvL0Kteg-RlkBg9xLH9RfJMzuFw7OLRLJFdUSg1LzwA), you can either open an [issue](https://github.com/bharatbrijwasi/covid-19/issues) or contact me.
 
 **Contact person** : Bharat Sharma
 
