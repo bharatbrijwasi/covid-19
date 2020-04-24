@@ -74,24 +74,12 @@ valueBox(value = paste(myData %>%   dplyr::select(Cases = Cases) %>%
            caption = "Active Cases",color = active_color)
 ```
 
-
-### recovered {.value-box}
-
-```{r}
-valueBox(value = paste(format(sum(df$recovered, na.rm = TRUE), big.mark = ","), " (",
-                       round(100 * sum(df$recovered, na.rm = TRUE) / sum(df$confirmed), 1), 
-                       "%)", sep = ""), 
-         caption = "Recovered Cases", 
-         color = recovered_color)
-```
-
+ 
 ### deaths {.value-box}
 
 ```{r}
 
-valueBox(value = paste(format(sum(df$death, na.rm = TRUE), big.mark = ","), " (",
-                       round(100 * sum(df$death, na.rm = TRUE) / sum(df$confirmed), 1), 
-                       "%)", sep = ""),
+valueBox(value = paste(myData %>%   dplyr::select(Deaths = Deaths) %>% sum()),
          caption = "Death Cases",
          color = death_color)
 ```
@@ -109,28 +97,34 @@ plotly::plot_ly(data = CountryWiseData[1:50,],
                 type = "bar",
                 name = "Confirmed cases",
                 marker = list(color = confirmed_color)) %>%
-  plotly::add_trace(y = ~Active_Cases,
+
+    plotly::add_trace(y = ~Active_Cases,
                     name = "Active Cases",
                     marker = list(color = active_color)) %>%
+  
   plotly::add_trace(y = ~Total_Deaths,
                     name = "Total Deaths",
                     marker = list(color = death_color)) %>%
+  
   plotly::layout(title = "", 
                  barmode = 'stack',
-                 yaxis = list(title = "Total cases(log scale)", type = 'log'),
+                 yaxis = list(title = "Total cases(log scaled)", type = 'log'),
                  xaxis = list(title = ""),
                  hovermode = 'compare',
+                 annotations = list(
+                   text = paste("Last update:24 April", sep = " "),
+                   xref = "paper",
+                   yref = "paper",
+                   showarrow = FALSE,
+                  x = 0.95,
+                  y = 1
+                 ),
                  margin = list(
-                   pad = 2,
-                   t=5
+                   pad = 2
                  ))
 
 
 ```
-
-
-
-
 
 
 Row 
@@ -161,14 +155,7 @@ CountryWiseData[1:nrow(CountryWiseData),0:4] %>%
 
 ```
 
-India
-=======================================================================
-Row
------------------------------------------------------------------------
-**Update soon**
 
-Row
------------------------------------------------------------------------
 Map
 =======================================================================
 **Map**
@@ -231,6 +218,12 @@ read.csv("https://opendata.ecdc.europa.eu/covid19/casedistribution/csv", na.stri
                 "}")))
 ```
 
+
+India
+=======================================================================
+**Update soon**
+
+
 About Me 
 =======================================================================
 
@@ -260,7 +253,7 @@ The dashboard was deployed to Github docs. If you wish to deploy and/or modify t
 
 **Note:**
 
-For any question or [feedback](https://docs.google.com/forms/d/e/1FAIpQLScIpkH7atKCNCkxaHatzK5Bw0U1KpVXZMAcSysBJ40o57ccog/viewform?fbzx=1636045108145844218&edit2=2_ABaOnud5YDSMdrUrvL0Kteg-RlkBg9xLH9RfJMzuFw7OLRLJFdUSg1LzwA), you can either open an [issue](https://github.com/bharatbrijwasi/covid-19/issues) or contact me.
+For any query or [feedback](https://docs.google.com/forms/d/e/1FAIpQLScIpkH7atKCNCkxaHatzK5Bw0U1KpVXZMAcSysBJ40o57ccog/viewform?fbzx=1636045108145844218&edit2=2_ABaOnud5YDSMdrUrvL0Kteg-RlkBg9xLH9RfJMzuFw7OLRLJFdUSg1LzwA), you can either open an [issue](https://github.com/bharatbrijwasi/covid-19/issues) or contact me.
 
 **Contact person** : Bharat Sharma
 
