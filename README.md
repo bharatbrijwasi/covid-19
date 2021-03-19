@@ -13,14 +13,14 @@ The data behind this dashboard can be found in the following
 on a daily bases
 
 ### Packages Used
-1.flexdashbord
-2.RMarkdown
-3. dylyr
-4. DT
-5. coronavirus
-6. leaflet
-7. lefpop 
-8. purrr
+1.[flexdashbord](https://rmarkdown.rstudio.com/flexdashboard/)<br>
+2.[RMarkdown](https://rmarkdown.rstudio.com/flexdashboard/) 
+3. [dylyr](https://rmarkdown.rstudio.com/flexdashboard/)  
+4. [DT](https://rmarkdown.rstudio.com/flexdashboard/)
+5. [coronavirus](https://rmarkdown.rstudio.com/flexdashboard/)
+6. [leaflet](https://rmarkdown.rstudio.com/flexdashboard/)
+7. [lefpop](https://rmarkdown.rstudio.com/flexdashboard/)
+8. [purrr](https://rmarkdown.rstudio.com/flexdashboard/)
 
 ### The Coronavirus Dashboard
 
