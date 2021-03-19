@@ -13,18 +13,16 @@ The data behind this dashboard can be found in the following
 on a daily bases
 
 ### Packages Used
-1.[flexdashbord](https://rmarkdown.rstudio.com/flexdashboard/)<br>
-2.[RMarkdown](https://rmarkdown.rstudio.com/lesson)<br> 
+1. [flexdashbord](https://rmarkdown.rstudio.com/flexdashboard/)<br>
+2. [RMarkdown](https://rmarkdown.rstudio.com/lesson)<br> 
 3. [dylyr](https://dplyr.tidyverse.org/-13.html)<br>
 4. [DT](https://rstudio.github.io/DT/)<br>
 5. [coronavirus](https://github.com/RamiKrispin/coronavirus)<br>
 6. [leaflet](https://rmarkdown.rstudio.com/flexdashboard/)<br>
 7. [lefpop](https://rmarkdown.rstudio.com/flexdashboard/)<br>
-8. [purrr](https://rmarkdown.rstudio.com/flexdashboard/)<br>
+8. [purrr](https://purrr.tidyverse.org/)<br>
 
-### The Coronavirus Dashboard
-
-This Coronavirus dashboard provides an overview of the 2019 Novel Coronavirus COVID-19 (2019-nCoV) epidemic. This dashboard is built with R using the Rmakrdown framework . The code behind the dashboard available here
+![bhrrrr](https://github.com/bharatbrijwasi/covid-19/blob/master/dashboard.PNG)
 
 ### Data
 
@@ -38,6 +36,7 @@ Deployment and reproducibly
 
 The dashboard was deployed to Github docs. If you wish to deploy and/or modify the dashboard on your Github account, [click here for fork](https://github.com/bharatbrijwasi/covid-19)
 
+# 
 Note:
 
 For any query or [feedback](https://docs.google.com/forms/d/e/1FAIpQLScIpkH7atKCNCkxaHatzK5Bw0U1KpVXZMAcSysBJ40o57ccog/viewform?fbzx=1636045108145844218&edit2=2_ABaOnud5YDSMdrUrvL0Kteg-RlkBg9xLH9RfJMzuFw7OLRLJFdUSg1LzwA), you can either open an [issue](https://github.com/bharatbrijwasi/covid-19/issues) or contact me.
