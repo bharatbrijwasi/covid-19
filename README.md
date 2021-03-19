@@ -1,6 +1,5 @@
-# covid-19 Project
-Testing Phase
-
+# COVID-19 Project
+Minor project - 1 (GLA UNIVRSITY)
 ### The Coronavirus Dashboard
 
 This [Coronavirus
